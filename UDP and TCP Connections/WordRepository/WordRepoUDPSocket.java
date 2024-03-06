@@ -2,15 +2,18 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.*;
 import java.util.Random;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class WordRepoUDPSocket {
+
+    private static final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public static void main(String[] args) {
         final int PORT = 9876;
@@ -34,91 +37,64 @@ public class WordRepoUDPSocket {
         }
     }
 
-   // private static void handleClient(DatagramSocket serverSocket, DatagramPacket receivePacket) {
-     //   try {
-            // Process client request (You can replace this with your own logic)
-         //   String clientData = new String(receivePacket.getData(), 0, receivePacket.getLength());
-         //   System.out.println("Received from client at " + receivePacket.getAddress().getHostAddress() + ": " + clientData);
+    private static void handleClient(DatagramSocket serverSocket, DatagramPacket receivePacket) {
+        try {
+            // Process client request
+            String clientData = new String(receivePacket.getData(), 0, receivePacket.getLength());
+            System.out.println("Received from client at " + receivePacket.getAddress().getHostAddress() + ": " + clientData);
 
-            // Prepare response (You can replace this with your own logic)
-        //    String responseData = "Hello, client! You sent: " + clientData;
-        //    byte[] sendData = responseData.getBytes();
+            // Parse the data message
+            String[] parts = clientData.split("[,\\s]+");
+
+            // Check if the parsed message is in the expected format
+            if (parts.length < 1) {
+                System.err.println("Invalid request format");
+                return;
+            }
+
+            // Determine the command
+            String command = parts[0];
+
+            // Prepare response based on the command
+            String response = HandleRequest(command, clientData);
 
             // Send response back to the client
-       //     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
-       //     serverSocket.send(sendPacket);
+            byte[] sendData = response.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+            serverSocket.send(sendPacket);
 
-      //      System.out.println("Sent response to client at " + receivePacket.getAddress().getHostAddress() + ":" + receivePacket.getPort());
-    //    } catch (Exception e) {
-    //        e.printStackTrace();
-   //     }
-//    }
+            System.out.println("Sent response to client at " + receivePacket.getAddress().getHostAddress() + ":" + receivePacket.getPort());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-private static void handleClient(DatagramSocket serverSocket, DatagramPacket receivePacket) {
-    try {
-        // Process client request
-        String clientData = new String(receivePacket.getData(), 0, receivePacket.getLength());
-        System.out.println("Received from client at " + receivePacket.getAddress().getHostAddress() + ": " + clientData);
+    private static String HandleRequest(String command, String msg) {
+        String response = "";
 
-        // Parse the data message
-        String[] parts = clientData.split("[,\\s]+");
-
-        // Check if the parsed message is in the expected format
-        if (parts.length < 1) {
-            System.err.println("Invalid request format");
-            return;
+        switch (command) {
+            case "cw":
+                response = CheckWord(msg);
+                break;
+            case "dw":
+                response = DeleteWord(msg);
+                break;
+            case "aw":
+                response = AddWord(msg);
+                break;
+            case "rw":
+                response = RequestWord(msg);
+                break;
+            default:
+                response = "Invalid request";
         }
 
-        // Determine the command
-        String command = parts[0];
-
-        // Prepare response based on the command
-        String response = HandleRequest(command, clientData);
-
-        // Send response back to the client
-        byte[] sendData = response.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
-        serverSocket.send(sendPacket);
-
-        System.out.println("Sent response to client at " + receivePacket.getAddress().getHostAddress() + ":" + receivePacket.getPort());
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-
-/*
- * Parses the msg and directs to appropriate function returns new message to send reply
- */
-private static String HandleRequest(String command, String msg) {
-    String response = "";
-
-    switch (command) {
-        case "cw":
-            response = CheckWord(msg);
-            break;
-        case "dw":
-            response = DeleteWord(msg);
-            break;
-        case "aw":
-            response = AddWord(msg);
-            break;
-        case "rw":
-            response = RequestWord(msg);
-            break;
-        default:
-            response = "Invalid request";
+        return response;
     }
 
-    return response;
-}
-
-/**
-* Name: CheckWord
-* Purpose: Checks if a specified word exists in the "words.txt" file.
-* Input: The input message in the format "cw <word>".
-* Output: A message indicating whether the specified word exists or not.
-*/
-       private static String CheckWord(String msg) {
+    private static String CheckWord(String msg) {
+        lock.readLock().lock();
+        try {
             String[] parts = msg.split(" ");
 
             if (parts.length != 2 || !parts[0].equals("cw")) {
@@ -140,15 +116,14 @@ private static String HandleRequest(String command, String msg) {
             }
 
             return wordToCheck + " does not exist";
+        } finally {
+            lock.readLock().unlock();
         }
+    }
 
-/**
- * Name: DeleteWord
- * Purpose: Deletes a specified word from the "words.txt" file if it exists.
- * Input: The input message in the format "dw <word>".
- * Output: A message indicating whether the specified word has been deleted or not.
- */
-       private static String DeleteWord(String msg) {
+    private static String DeleteWord(String msg) {
+        lock.writeLock().lock();
+        try {
             String[] parts = msg.split(" ");
 
             if (parts.length != 2 || !parts[0].equals("dw")) {
@@ -190,14 +165,14 @@ private static String HandleRequest(String command, String msg) {
             else {
                 return wordToDelete + " not deleted";
             }
+        } finally {
+            lock.writeLock().unlock();
         }
-/**
-         * Name: AddWord
-         * Purpose: Adds a specified word to the "words.txt" file if it does not already exist.
-         * Input: The input message in the format "aw <word>".
-         * Output: A message indicating whether the specified word has been added or not.
-         */
-        private static String AddWord(String msg) {
+    }
+
+    private static String AddWord(String msg) {
+        lock.writeLock().lock();
+        try {
             String[] parts = msg.split(" ");
 
             if (parts.length != 2 || !parts[0].equals("aw")) {
@@ -210,7 +185,7 @@ private static String HandleRequest(String command, String msg) {
                 String line;
 
                 // Iterate through each line in the "words.txt" file
-                 while ((line = br.readLine()) != null) {
+                while ((line = br.readLine()) != null) {
                     // Check if the trimmed line matches the word to be added (case-insensitive)
                     if (line.trim().equalsIgnoreCase(wordToAdd)) {
                         return wordToAdd + " already exists, not added";
@@ -231,54 +206,56 @@ private static String HandleRequest(String command, String msg) {
             }
 
             return wordToAdd + " added";
-        }
-   /**
-         * Name: RequestWord
-         * Purpose: Requests a word from the "words.txt" file based on given constraints.
-         * Input: The input message in the format "rw,sl,<starting letter>,el,<ending letter>,wl,<min word length>".
-         * Output: A message indicating the word found or a message indicating that no word meets the specified constraints.
-         */
-        private static String RequestWord(String constraints) {
-        String[] parts = constraints.split(",");
-
-        // Check if the input message is in the expected format
-        if (parts.length != 7 || !parts[0].equals("rw")) {
-            return "Invalid request";
-        }
-
-        String category = parts[1];
-        String startLetter = parts[2];
-        String endLetter = parts[4];
-        String minWordLength = parts[6];
-
-        List<String> wordsList = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader("words.txt"))) {
-            String line;
-
-            // Iterate through each line in the "words.txt" file
-            while ((line = br.readLine()) != null) {
-                // Check if the word meets the specified constraint
-                if ((parts[1].equals("sl") && line.startsWith(startLetter)) ||
-                        (parts[3].equals("el") && line.endsWith(endLetter)) ||
-                        (parts[5].equals("wl") && !parts[6].equals("0") && line.length() >= Integer.parseInt(minWordLength))) {
-                    wordsList.add(line);
-                }
-            }
-
-            if (!wordsList.isEmpty()) {
-                // Randomly select a word from the list
-                Random random = new Random();
-                String selectedWord = wordsList.get(random.nextInt(wordsList.size()));
-                return "rw " + selectedWord;
-            } else {
-                return "No word found that meets the specified constraints";
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Error occurred while searching for the word";
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
+    private static String RequestWord(String constraints) {
+        lock.readLock().lock();
+        try {
+            String[] parts = constraints.split(",");
+
+            // Check if the input message is in the expected format
+            if (parts.length != 7 || !parts[0].equals("rw")) {
+                return "Invalid request";
+            }
+
+            String category = parts[1];
+            String startLetter = parts[2];
+            String endLetter = parts[4];
+            String minWordLength = parts[6];
+
+            List<String> wordsList = new ArrayList<>();
+
+            try (BufferedReader br = new BufferedReader(new FileReader("words.txt"))) {
+                String line;
+
+                // Iterate through each line in the "words.txt" file
+                while ((line = br.readLine()) != null) {
+                    // Check if the word meets the specified constraint
+                    if ((parts[1].equals("sl") && line.startsWith(startLetter)) ||
+                            (parts[3].equals("el") && line.endsWith(endLetter)) ||
+                            (parts[5].equals("wl") && !parts[6].equals("0") && line.length() >= Integer.parseInt(minWordLength))) {
+                        wordsList.add(line);
+                    }
+                }
+
+                if (!wordsList.isEmpty()) {
+                    // Randomly select a word from the list
+                    Random random = new Random();
+                    String selectedWord = wordsList.get(random.nextInt(wordsList.size()));
+                    return "rw " + selectedWord;
+                } else {
+                    return "No word found that meets the specified constraints";
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "Error occurred while searching for the word";
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
 }
