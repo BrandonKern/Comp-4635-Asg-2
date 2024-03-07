@@ -63,6 +63,15 @@ public class Client {
 
         // (5) Print the login id to the user
         System.out.println("Your unique login id is: " + login_id);
+
+         // Check if user already exists in the system
+        if (userStatus[loginId][0] == 1) {
+            System.out.println("Sorry, you are already logged in. Please try again later.");
+            return -1; // Indicate failure
+        }
+
+        // Set user as active
+        userStatus[loginId][0] = 1;
         
        // System.out.print(" Please enter your Login ID: ");
        //  int login_id = scan.nextInt();
@@ -190,8 +199,9 @@ public class Client {
      */
     public static void primaryHandler(SingleRequestClient user) {
         int id = loginPrompt(user);
-       promptBeforeStartingGame(id, user);
-
+        if (id != -1) {
+            promptBeforeStartingGame(id, user);
+        }
 
     }
 
