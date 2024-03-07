@@ -36,14 +36,47 @@ public class Client {
         Scanner scan = new Scanner(System.in);
 
         System.out.println(" Hi Welcome to the Best Crossword Puzzle of the Century!!! The Puzzler");
-        System.out.print(" Please enter your Login ID: ");
-         int login_id = scan.nextInt();
+
+         // (1) Ask for the user's first name
+        System.out.print("Please enter your first name: ");
+        String firstName = scan.nextLine();
+
+          // (2) Ask for the user's last name
+        System.out.print("Please enter your last name: ");
+        String lastName = scan.nextLine();
+
+        // (3) Ask for the user's age
+        int age = 0;
+        boolean validAge = false;
+        while (!validAge) {
+            try {
+                System.out.print("Please enter your age: ");
+                age = Integer.parseInt(scan.nextLine());
+                validAge = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid integer for age.");
+            }
+        }
+
+        // (4) Create a unique login id based on the provided formula
+        int login_id = createLoginId(firstName, lastName, age);
+
+        // (5) Print the login id to the user
+        System.out.println("Your unique login id is: " + login_id);
+        
+       // System.out.print(" Please enter your Login ID: ");
+       //  int login_id = scan.nextInt();
         sendRequestToServer(user,createMessage("ru", String.valueOf(login_id)));
-
-
 
         return login_id;
 
+    }
+
+      public static int createLoginId(String firstName, String lastName, int age) {
+        // Your formula for creating a unique login id based on first name, last name, and age
+        // For example:
+        int hashCode = firstName.hashCode() + lastName.hashCode() + age + firstName.length() + lastName.length();
+        return Math.abs(hashCode % 1000); // Ensuring the login id is within 0 to 999
     }
 
     /*
