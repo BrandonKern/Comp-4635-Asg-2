@@ -62,7 +62,7 @@ public class CrissCrossPuzzleServerImpl implements CrissCrossPuzzleServer {
             if (games.get(user_id) != null) {
                 System.out.println("Successfully created");
             }
-            System.out.println("New Game made for user " + userId);
+            System.out.println("New Game made for user " + user_id);
         }
         return game.toString();
     }
