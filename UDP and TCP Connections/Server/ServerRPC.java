@@ -6,12 +6,12 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class Server2 {
+public class ServerRPC {
     public  static void  main (String [] args) {
         try {
             final int serverPort = 7777;
-            CrissCrossPuzzleServer connection = new CrissCrossPuzzleServerImpl();
-            CrissCrossPuzzleServer exportObject = (CrissCrossPuzzleServer) UnicastRemoteObject.exportObject(connection, 0);
+            CrissCrossPuzzleServerImpl connection = new CrissCrossPuzzleServerImpl();
+            CrissCrossPuzzleServerImpl exportObject = (CrissCrossPuzzleServerImpl) UnicastRemoteObject.exportObject(connection, 0);
             try {
                 LocateRegistry.getRegistry(serverPort).list();
             } catch (RemoteException e) {

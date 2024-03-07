@@ -6,13 +6,13 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 
-public class Client2 {
+public class ClientRPC {
     public static void main(String [] args)
     {
         try {
             Scanner scan = new Scanner(System.in);
             String Url = "rmi://" + InetAddress.getLocalHost().getHostAddress() + ":7777/CrissCrossPuzzleServer";
-            CrissCrossPuzzleServer connection = (CrissCrossPuzzleServer) Naming.lookup(Url);
+            CrissCrossPuzzleServerImpl connection = (CrissCrossPuzzleServerImpl) Naming.lookup(Url);
 
 
             System.out.println("current amount in Bank account" + connection.login(scan.nextInt()));
