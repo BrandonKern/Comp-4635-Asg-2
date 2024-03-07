@@ -1,0 +1,149 @@
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class WordRepoServer extends UnicastRemoteObject implements WordRepo {
+    private static final long serialVersionUID = 1L;
+
+    protected WordRepoServer() throws RemoteException {
+        super();
+    }
+
+    public static void main(String[] args) {
+        try {
+            WordRepoServer wordRepoServer = new WordRepoServer();
+            Naming.rebind("WordRepo", wordRepoServer);
+            System.out.println("WordRepo Server is running.");
+        } catch (Exception e) {
+            System.err.println("WordRepo Server exception: " + e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String checkWord(String word) throws RemoteException {
+        // Implementation of checkWord method
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("words.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().equalsIgnoreCase(word)) {
+                    br.close();
+                    return word + " exists";
+                }
+            }
+            br.close();
+            return word + " does not exist";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error occurred while checking the word";
+        }
+    }
+
+    @Override
+    public String deleteWord(String word) throws RemoteException {
+        // Implementation of deleteWord method
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("words.txt"));
+            List<String> lines = new ArrayList<>();
+            String line;
+            boolean found = false;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().equalsIgnoreCase(word)) {
+                    found = true;
+                } else {
+                    lines.add(line);
+                }
+            }
+            br.close();
+
+            if (!found) {
+                return word + " not deleted";
+            }
+
+            BufferedWriter bw = new BufferedWriter(new FileWriter("words.txt"));
+            for (String l : lines) {
+                bw.write(l);
+                bw.newLine();
+            }
+            bw.close();
+
+            return word + " deleted";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error occurred while deleting the word";
+        }
+    }
+
+    @Override
+    public String addWord(String word) throws RemoteException {
+        // Implementation of addWord method
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("words.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().equalsIgnoreCase(word)) {
+                    br.close();
+                    return word + " already exists, not added";
+                }
+            }
+            br.close();
+
+            BufferedWriter bw = new BufferedWriter(new FileWriter("words.txt", true));
+            bw.write(word);
+            bw.newLine();
+            bw.close();
+
+            return word + " added";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error occurred while adding the word";
+        }
+    }
+
+    @Override
+    public String requestWord(String constraints) throws RemoteException {
+        // Implementation of requestWord method
+        try {
+            String[] parts = constraints.split(",");
+
+            // Check if the input message is in the expected format
+            if (parts.length != 7 || !parts[0].equals("rw")) {
+                return "Invalid request";
+            }
+
+            String category = parts[1];
+            String startLetter = parts[2];
+            String endLetter = parts[4];
+            String minWordLength = parts[6];
+
+            List<String> wordsList = new ArrayList<>();
+
+            BufferedReader br = new BufferedReader(new FileReader("words.txt"));
+            String line;
+
+            // Iterate through each line in the "words.txt" file
+            while ((line = br.readLine()) != null) {
+                // Check if the word meets the specified constraint
+                if ((parts[1].equals("sl") && line.startsWith(startLetter)) ||
+                        (parts[3].equals("el") && line.endsWith(endLetter)) ||
+                        (parts[5].equals("wl") && !parts[6].equals("0") && line.length() >= Integer.parseInt(minWordLength))) {
+                    wordsList.add(line);
+                }
+            }
+            br.close();
+
+            if (!wordsList.isEmpty()) {
+                // Randomly select a word from the list
+                Random random = new Random();
+                String selectedWord = wordsList.get(random.nextInt(wordsList.size()));
+                return "rw " + selectedWord;
+            } else {
+                return "No word found that meets the specified constraints";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error occurred while searching for the word";
+        }
+    }
+}
