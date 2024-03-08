@@ -36,11 +36,14 @@ public class ClientRPC {
         System.out.println(" Hi Welcome to the Best Crossword Puzzle of the Century!!! The Puzzler");
         System.out.print(" Please enter your Login ID: ");
         int login_id = scan.nextInt();
-         System.out.print(connection.login(login_id));
+         //System.out.print(connection.login(login_id));
 
+        if (connection.checkUser(login_id))
+        {
+            return login_id;
+        }
 
-
-        return login_id;
+        return -1;
 
     }
 
@@ -153,8 +156,12 @@ public class ClientRPC {
      */
     public static void primaryHandler( Scanner scan, CrissCrossPuzzleServer connection) throws RemoteException {
         int id = loginPrompt( scan,connection);
-        promptBeforeStartingGame(id, scan,connection);
 
+       if (id != -1) {
+         promptBeforeStartingGame(id, scan,connection);
+        }
+
+        else { System.out.print("User is already active or error occured in registering the user."); }
 
     }
 
