@@ -143,4 +143,9 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
         }
         return "Game does not exist";
     }
+
+    @Override
+    public boolean setUserInactive(String user_id) throws RemoteException {
+        return userAccounts.setUserInactive(user_id);
+    }
 }
