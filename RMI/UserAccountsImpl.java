@@ -11,7 +11,10 @@ import java.util.ArrayList;
 
 public class UserAccountsImpl extends UnicastRemoteObject implements UserAccounts {
     private static final ReadWriteLock lock = new ReentrantReadWriteLock();
-
+   /**
+     * Constructor for UserAccountsImpl class.
+     * RemoteException if an error occurs during remote method invocation.
+     */
     protected UserAccountsImpl() throws RemoteException {
         super();
     }
