@@ -19,11 +19,21 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
     private static final long serialVersionUID = 1L;
     private static final ReadWriteLock lock = new ReentrantReadWriteLock();
 
+    /**
+     * Constructor for WordRepoImpl class.
+     * @throws RemoteException if an error occurs during remote method invocation
+     */
+    
     protected WordRepoImpl() throws RemoteException {
         super();
     }
 
-    
+    /**
+     * Checks if a word exists in the repository.
+     * @param word the word to be checked
+     * @return true if the word exists, false otherwise
+     * @throws RemoteException if an error occurs during remote method invocation
+     */    
     @Override
     public Boolean checkWord(String word) throws RemoteException {
         lock.readLock().lock();
@@ -46,6 +56,12 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
         }
     }
 
+     /**
+     * Deletes a word from the repository.
+     * @param word the word to be deleted
+     * @return true if the word is deleted successfully, false otherwise
+     * @throws RemoteException if an error occurs during remote method invocation
+     */
     @Override
     public Boolean deleteWord(String word) throws RemoteException {
         lock.writeLock().lock();
@@ -83,7 +99,12 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
             lock.writeLock().unlock();
         }
     }
-
+    /**
+     * Adds a word to the repository.
+     * @param word the word to be added
+     * @return true if the word is added successfully, false otherwise
+     * @throws RemoteException if an error occurs during remote method invocation
+     */
     @Override
     public Boolean addWord(String word) throws RemoteException {
         lock.writeLock().lock();
@@ -119,6 +140,12 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
         }
     }
 
+     /**
+     * Requests a word from the repository based on specified constraints.
+     * @param constraints a string containing constraints for word selection
+     * @return a word that meets the specified constraints or an appropriate message
+     * @throws RemoteException if an error occurs during remote method invocation
+     */
     @Override
     public String requestWord(String constraints) throws RemoteException {
         lock.readLock().lock();
