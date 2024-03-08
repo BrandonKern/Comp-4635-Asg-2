@@ -43,7 +43,7 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
 
     @Override
     public String removeWord(String word) throws RemoteException {
-        if (wordRepo.addWord(word)) {
+        if (wordRepo.deleteWord(word)) {
             return "Word deleted";
         }
         return "Word not deleted";
@@ -149,3 +149,4 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
         return userAccounts.setUserInactive(user_id);
     }
 }
+
