@@ -78,14 +78,13 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
 
                 // Iterate through each line in the "words.txt" file
                 while ((line = br.readLine()) != null) {
-                    // Check if the trimmed line matches the word to be deleted (case-insensitive)
                     if (line.trim().equalsIgnoreCase(word)) {
-                        fileContent.append("*"); // Replace the word with "*"
+                        fileContent.append("*"); 
                         wordFound = true;
                     } else {
-                        fileContent.append(line); // Keep the existing line
+                        fileContent.append(line); 
                     }
-                    fileContent.append(System.lineSeparator()); // Add newline character
+                    fileContent.append(System.lineSeparator()); 
                 }
 
                 // Update the file with the modified content
@@ -121,7 +120,7 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
 
                 // Iterate through each line in the "words.txt" file
                 while ((line = br.readLine()) != null) {
-                    // Check if the trimmed line matches the word to be added (case-insensitive)
+                    
                     if (line.trim().equalsIgnoreCase(word)) {
                         return false;
                     }
@@ -134,7 +133,7 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
             // The word does not exist, so add it to the file
             try (BufferedWriter bw = new BufferedWriter(new FileWriter("words.txt", true))) {
                 bw.write(word);
-                bw.newLine(); // Add a newline character after the word
+                bw.newLine(); 
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
@@ -177,7 +176,7 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
 
                 // Iterate through each line in the "words.txt" file
                 while ((line = br.readLine()) != null) {
-                    // Check if the word meets the specified constraint
+                  
                     if ((parts[1].equals("sl") && line.startsWith(startLetter)) ||
                             (parts[3].equals("el") && line.endsWith(endLetter)) ||
                             (parts[5].equals("wl") && !parts[6].equals("0") && line.length() >= Integer.parseInt(minWordLength))) {
