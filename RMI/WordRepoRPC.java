@@ -8,15 +8,16 @@ import java.rmi.server.UnicastRemoteObject;
 public class WordRepoRPC {
     public static void main(String[] args) {
         try {
+            final int serverPort = 1099;
             // Create and export the remote object
             WordRepo wordRepo = new WordRepoImpl();
             // WordRepo exportObject = (WordRepo) UnicastRemoteObject.exportObject(wordRepo, 0);
 
             // Start the RMI registry on port 1099
             try {
-                LocateRegistry.getRegistry(1099).list();
+                LocateRegistry.getRegistry(serverPort).list();
             } catch (RemoteException e) {
-                LocateRegistry.createRegistry(1099);
+                LocateRegistry.createRegistry(serverPort);
             }
 
             // Bind the remote object to the registry with the name "WordRepo"

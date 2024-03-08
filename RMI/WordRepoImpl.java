@@ -10,14 +10,15 @@ import java.util.Random;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class WordRepositoryImpl extends UnicastRemoteObject implements WordRepository {
+public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
     private static final long serialVersionUID = 1L;
     private static final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    protected WordRepositoryImpl() throws RemoteException {
+    protected WordRepoImpl() throws RemoteException {
         super();
     }
 
+    
     @Override
     public String checkWord(String msg) throws RemoteException {
         lock.readLock().lock();

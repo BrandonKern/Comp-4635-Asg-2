@@ -7,10 +7,10 @@ import java.io.FileWriter;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class UserAccountServerImpl extends UnicastRemoteObject implements UserAccountServer {
+public class UserAccountsImpl extends UnicastRemoteObject implements UserAccounts {
     private static final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    protected UserAccountServerImpl() throws RemoteException {
+    protected UserAccountsImpl() throws RemoteException {
         super();
     }
 

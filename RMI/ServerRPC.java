@@ -9,17 +9,16 @@ import java.rmi.server.UnicastRemoteObject;
 public class ServerRPC {
     public  static void  main (String [] args) {
         try {
-            final int serverPort = 7777;
+            final int serverPort = 1099;
             CrissCrossPuzzleServerImpl connection = new CrissCrossPuzzleServerImpl();
-            CrissCrossPuzzleServerImpl exportObject = (CrissCrossPuzzleServerImpl) UnicastRemoteObject.exportObject(connection, 0);
             try {
                 LocateRegistry.getRegistry(serverPort).list();
             } catch (RemoteException e) {
                 LocateRegistry.createRegistry(serverPort);
             }
 
-            String URL = "rmi://" + InetAddress.getLocalHost().getHostAddress() + ":7777/CrissCrossPuzzleServer";
-            Naming.rebind(URL,exportObject);
+            String serverURL = "rmi://" + InetAddress.getLocalHost().getHostAddress() + ":1099/CrissCrossPuzzleServer";
+            Naming.rebind(serverURL,connection);
             System.out.println("waiting for the client");
         }catch (RemoteException | UnknownHostException | MalformedURLException e)
         {

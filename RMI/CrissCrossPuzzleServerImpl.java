@@ -1,14 +1,30 @@
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
-public class CrissCrossPuzzleServerImpl implements CrissCrossPuzzleServer {
+public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements CrissCrossPuzzleServer {
     private Map<Integer, Game> games = new HashMap<>();
+    private WordRepo wordRepo;
+    private UserAccounts userAccounts;
 
-    public CrissCrossPuzzleServerImpl() throws RemoteException {
+    public CrissCrossPuzzleServerImpl() throws RemoteException {  
         super();
+        try {
+            String wordUrl = "rmi://" + InetAddress.getLocalHost().getHostAddress() + ":1099/WordRepo";
+            wordRepo = (WordRepo) Naming.lookup(wordUrl);
+            String userUrl  = "rmi://" + InetAddress.getLocalHost().getHostAddress() + ":1099/UserAccounts";
+            userAccounts = (UserAccounts) Naming.lookup(userUrl);
+        } catch (UnknownHostException | MalformedURLException | NotBoundException | RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
