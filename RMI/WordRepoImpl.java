@@ -26,15 +26,7 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
     
     protected WordRepoImpl() throws RemoteException {
         super();
-    }
-
-    /**
-     * Name: checkWord
-     * Purpose: Checks if a word exists in the repository.
-     * Input: word the word to be checked
-     * Output: true if the word exists, false otherwise
-     * RemoteException if an error occurs during remote method invocation
-     */    
+    }  
     
     @Override
     public Boolean checkWord(String word) throws RemoteException {
@@ -58,13 +50,6 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
         }
     }
 
-     /**
-     * Name: deleteWord
-     * Purpose: Deletes a word from the repository.
-     * Input: word the word to be deleted
-     * Output: true if the word is deleted successfully, false otherwise
-     * RemoteException if an error occurs during remote method invocation
-     */
     
     @Override
     public Boolean deleteWord(String word) throws RemoteException {
@@ -102,13 +87,7 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
             lock.writeLock().unlock();
         }
     }
-    /**
-     * Name: addWord
-     * Purpose: Adds a word to the repository.
-     * Input: word the word to be added
-     * Output: true if the word is added successfully, false otherwise
-     * RemoteException if an error occurs during remote method invocation
-     */
+
     
     @Override
     public Boolean addWord(String word) throws RemoteException {
@@ -145,13 +124,6 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
         }
     }
 
-     /**
-     * Name: requestWord
-     * Purpose: Requests a word from the repository based on specified constraints.
-     * Input: constraints a string containing constraints for word selection
-     * Output: a word that meets the specified constraints or an appropriate message
-     * RemoteException if an error occurs during remote method invocation
-     */
     
     @Override
     public String requestWord(String constraints) throws RemoteException {
