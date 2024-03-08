@@ -232,6 +232,7 @@ public class ClientRPC {
                 //sendRequestToServer(user,createMessage("cw", scan.next()));
                 break;
             case "Q":
+                System.out.println(connection.setUserInactive(String.valueOf(user_id));
                 exit = true;
                 //break;
         }
