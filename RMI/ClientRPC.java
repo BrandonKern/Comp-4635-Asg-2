@@ -109,7 +109,7 @@ public class ClientRPC {
                     System.out.println();
                     System.out.print(" Please enter the word you would like to add: ");
 
-                    connection.addWord(scan.next());
+                    System.out.println(connection.addWord(scan.next()));
                     break;
 
                 case "R":
@@ -123,12 +123,12 @@ public class ClientRPC {
                     System.out.println();
                     System.out.print(" Please enter the word you would like to check: ");
 
-                    connection.checkWord(scan.next());
+                    System.out.println(connection.checkWord(scan.next()));
                     break;
 
                 case "S":
 
-                    connection.checkScore(user_id);
+                    System.out.println(connection.checkScore(String.valueOf(user_id)));
 
                     break;
 

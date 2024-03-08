@@ -35,22 +35,30 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
 
     @Override
     public String addWord(String word) throws RemoteException {
-        return "";
+        if (wordRepo.addWord(word)) {
+            return "Word added";
+        }
+        return "Word not added";
     }
 
     @Override
     public String removeWord(String word) throws RemoteException {
-        return "";
+        if (wordRepo.addWord(word)) {
+            return "Word deleted";
+        }
+        return "Word not deleted";
     }
 
     @Override
     public boolean checkWord(String word) throws RemoteException {
-        return false;
+        boolean check = wordRepo.checkWord(word);
+        System.out.println("Check word " + word + " is " + check);
+        return check;
     }
 
     @Override
-    public int checkScore(int user_id) throws RemoteException {
-        return 0;
+    public String checkScore(String user_id) throws RemoteException {
+        return userAccounts.checkUserScore(user_id);
     }
 
     @Override

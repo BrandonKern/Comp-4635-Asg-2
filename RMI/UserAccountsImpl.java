@@ -55,15 +55,7 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
     }
 
     @Override
-    public String checkUserScore(String command) throws RemoteException {
-        String[] parts = command.split(" ");
-
-        if (parts.length != 2 || !parts[0].equals("us")) {
-            return "Invalid Request";
-        }
-
-        String userId = parts[1];
-
+    public String checkUserScore(String user_id) throws RemoteException {
         lock.readLock().lock();
         try {
             try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
@@ -71,8 +63,8 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
                 while ((line = br.readLine()) != null) {
                     String[] lineParts = line.trim().split(" ");
 
-                    if (lineParts[0].equalsIgnoreCase(userId)) {
-                        return userId + " score: " + lineParts[1];
+                    if (lineParts[0].equalsIgnoreCase(user_id)) {
+                        return user_id + " score: " + lineParts[1];
                     }
                 }
             } catch (Exception e) {
@@ -80,7 +72,7 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
                 return "Error occurred while checking the userId";
             }
 
-            return userId + " score not found";
+            return user_id + " score not found";
         } finally {
             lock.readLock().unlock();
         }

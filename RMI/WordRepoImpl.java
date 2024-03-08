@@ -20,46 +20,31 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
 
     
     @Override
-    public String checkWord(String msg) throws RemoteException {
+    public Boolean checkWord(String word) throws RemoteException {
         lock.readLock().lock();
         try {
-            String[] parts = msg.split(" ");
-
-            if (parts.length != 2 || !parts[0].equals("cw")) {
-                return "Invalid request";
-            }
-
-            String wordToCheck = parts[1];
-
             try (BufferedReader br = new BufferedReader(new FileReader("words.txt"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.trim().equalsIgnoreCase(wordToCheck)) {
-                        return wordToCheck + " exists";
+                    if (line.trim().equalsIgnoreCase(word)) {
+                        return true;
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return "Error occurred while checking the word";
+                return false;
             }
 
-            return wordToCheck + " does not exist";
+            return false;
         } finally {
             lock.readLock().unlock();
         }
     }
 
     @Override
-    public String deleteWord(String msg) throws RemoteException {
+    public Boolean deleteWord(String word) throws RemoteException {
         lock.writeLock().lock();
         try {
-            String[] parts = msg.split(" ");
-
-            if (parts.length != 2 || !parts[0].equals("dw")) {
-                return "Invalid request";
-            }
-
-            String wordToDelete = parts[1];
             Boolean wordFound = false;
 
             try (BufferedReader br = new BufferedReader(new FileReader("words.txt"))) {
@@ -69,7 +54,7 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
                 // Iterate through each line in the "words.txt" file
                 while ((line = br.readLine()) != null) {
                     // Check if the trimmed line matches the word to be deleted (case-insensitive)
-                    if (line.trim().equalsIgnoreCase(wordToDelete)) {
+                    if (line.trim().equalsIgnoreCase(word)) {
                         fileContent.append("*"); // Replace the word with "*"
                         wordFound = true;
                     } else {
@@ -85,31 +70,19 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                return "Error occurred while deleting the word";
+                return false;
             }
 
-            if (wordFound) {
-                return wordToDelete + " deleted";
-            }
-            else {
-                return wordToDelete + " not deleted";
-            }
+            return wordFound;
         } finally {
             lock.writeLock().unlock();
         }
     }
 
     @Override
-    public String addWord(String msg) throws RemoteException {
+    public Boolean addWord(String word) throws RemoteException {
         lock.writeLock().lock();
         try {
-            String[] parts = msg.split(" ");
-
-            if (parts.length != 2 || !parts[0].equals("aw")) {
-                return "Invalid request";
-            }
-
-            String wordToAdd = parts[1];
 
             try (BufferedReader br = new BufferedReader(new FileReader("words.txt"))) {
                 String line;
@@ -117,25 +90,25 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
                 // Iterate through each line in the "words.txt" file
                 while ((line = br.readLine()) != null) {
                     // Check if the trimmed line matches the word to be added (case-insensitive)
-                    if (line.trim().equalsIgnoreCase(wordToAdd)) {
-                        return wordToAdd + " already exists, not added";
+                    if (line.trim().equalsIgnoreCase(word)) {
+                        return false;
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return "Error occurred while checking the word";
+                return false;
             }
 
             // The word does not exist, so add it to the file
             try (BufferedWriter bw = new BufferedWriter(new FileWriter("words.txt", true))) {
-                bw.write(wordToAdd);
+                bw.write(word);
                 bw.newLine(); // Add a newline character after the word
             } catch (Exception e) {
                 e.printStackTrace();
-                return "Error occurred while adding the word";
+                return false;
             }
 
-            return wordToAdd + " added";
+            return true;
         } finally {
             lock.writeLock().unlock();
         }
