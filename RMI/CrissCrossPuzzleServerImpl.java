@@ -62,6 +62,16 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
     }
 
     @Override
+    public String checkUser(String user_id) throws RemoteException {
+        return userAccounts.checkUser(user_id);
+    }
+
+    @Override
+    public String updateUserScore(String user_id) throws RemoteException {
+        return userAccounts.updateUserScore(user_id);
+    }
+
+    @Override
     public String endGame(int user_id) throws RemoteException {
         Game game = games.get(user_id);
         if (game != null) {
@@ -81,7 +91,7 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
             System.out.println("Game already exists for this user!");
             return "oof";
         } else {
-            game = new Game(failed_attempts, difficulty);
+            game = new Game(failed_attempts, difficulty, wordRepo);
             games.put(user_id, game);
             if (games.get(user_id) != null) {
                 System.out.println("Successfully created");

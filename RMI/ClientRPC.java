@@ -116,7 +116,7 @@ public class ClientRPC {
                     System.out.println();
                     System.out.print(" Please enter the word you would like to remove: ");
 
-                    connection.removeWord(scan.next());
+                    System.out.println(connection.removeWord(scan.next()));
                     break;
 
                 case "C":

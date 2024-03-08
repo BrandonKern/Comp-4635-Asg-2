@@ -15,14 +15,7 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
     }
 
     @Override
-    public String checkUser(String command) throws RemoteException {
-        String[] parts = command.split(" ");
-
-        if (parts.length != 2 || !parts[0].equals("cu")) {
-            return "Invalid Request";
-        }
-
-        String userId = parts[1];
+    public String checkUser(String user_id) throws RemoteException {
 
         lock.readLock().lock();
         try {
@@ -31,8 +24,8 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
                 while ((line = br.readLine()) != null) {
                     String[] lineParts = line.trim().split(" ");
 
-                    if (lineParts[0].equalsIgnoreCase(userId)) {
-                        return userId + " exists";
+                    if (lineParts[0].equalsIgnoreCase(user_id)) {
+                        return user_id + " exists";
                     }
                 }
             } catch (Exception e) {
@@ -41,14 +34,14 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
             }
 
             try (BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt", true))) {
-                bw.write(userId + " 0");
+                bw.write(user_id + " 0");
                 bw.newLine(); // Add a newline character after the word
             } catch (Exception e) {
                 e.printStackTrace();
                 return "Error occurred while adding the user";
             }
 
-            return userId + " does not exist, added user";
+            return user_id + " does not exist, added user";
         } finally {
             lock.readLock().unlock();
         }
@@ -79,14 +72,7 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
     }
 
     @Override
-    public String updateUserScore(String command) throws RemoteException {
-        String[] parts = command.split(" ");
-
-        if (parts.length != 2 || !parts[0].equals("su")) {
-            return "Invalid Request";
-        }
-
-        String userId = parts[1];
+    public String updateUserScore(String user_id) throws RemoteException {
 
         lock.writeLock().lock();
         try {
@@ -99,10 +85,10 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
                 while ((line = br.readLine()) != null) {
                     String[] lineParts = line.trim().split(" ");
 
-                    if (lineParts[0].equalsIgnoreCase(userId)) {
+                    if (lineParts[0].equalsIgnoreCase(user_id)) {
                         changed = true;
                         int userScore = Integer.parseInt(lineParts[1]) + 1;
-                        fileContent.append(userId).append(" ").append(userScore);
+                        fileContent.append(user_id).append(" ").append(userScore);
                     } else {
                         fileContent.append(line); // Keep the existing line
                     }
@@ -114,9 +100,9 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
                     bw.write(fileContent.toString());
                 }
                 if (changed) {
-                    return userId + " score updated";
+                    return user_id + " score updated";
                 } else {
-                    return userId + " score not updated";
+                    return user_id + " score not updated";
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,3 +1,4 @@
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -10,14 +11,14 @@ public class Game {
     private ArrayList<Pair<Integer, String>> solvedPuzzle;
     private ArrayList<Pair<Integer, String>> unsolvedPuzzle;
 
-    Game(int attempts, int diff) {
+    Game(int attempts, int diff, WordRepo wordRepo) {
         this.attempts = attempts;
         this.difficulty = diff;
         this.stem = null;
         this.solvedPuzzle = new ArrayList<>();
         this.unsolvedPuzzle = new ArrayList<>();
 
-        createPuzzle();
+        createPuzzle(wordRepo);
     }
 
     // public void setGame(int attempts, int diff) {
@@ -184,11 +185,11 @@ public class Game {
      * the first puzzle a second one that is a copy of the first but the letters are instead '_', creating a
      * puzzle the user can guess with.
      */
-    private void createPuzzle() {
+    private void createPuzzle(WordRepo wordRepo) {
         //The scanner and prompts will be replaced with UDP calls to the Word Repo
         Scanner gameScanner = new Scanner(System.in);
 
-        String stemWord = requestWord(this.difficulty-1, ' ', ' ', gameScanner);
+        String stemWord = requestWord(this.difficulty-1, ' ', ' ', gameScanner, wordRepo);
 
         this.stem = stemWord;
         this.solvedPuzzle.add(new Pair<Integer, String>(-1, stemWord));
@@ -202,10 +203,10 @@ public class Game {
                 int index = random.get(i);
 
                 if (first == true) {
-                    this.solvedPuzzle.add(new Pair<Integer, String>(index, requestWord(0, stemWord.charAt(index), ' ', gameScanner)));
+                    this.solvedPuzzle.add(new Pair<Integer, String>(index, requestWord(0, stemWord.charAt(index), ' ', gameScanner, wordRepo)));
                     first = false;
                 } else {
-                    this.solvedPuzzle.add(new Pair<Integer, String>(index, requestWord(0, ' ', stemWord.charAt(index), gameScanner)));
+                    this.solvedPuzzle.add(new Pair<Integer, String>(index, requestWord(0, ' ', stemWord.charAt(index), gameScanner, wordRepo)));
                     first = true;
                 }
             }
@@ -233,28 +234,42 @@ public class Game {
      *         scanner - the input scanner to read from the console
      * Return: the word given by the user
      *********************************************************************************************/
-    private String requestWord(int minLength, char firstLetter, char lastLetter, Scanner scanner) {
+    private String requestWord(int minLength, char firstLetter, char lastLetter, Scanner scanner, WordRepo wordRepo) {
         // Scanner wordGetter = new Scanner(System.in);
-        
-        String prompt = "Please enter a word with";
-        if (firstLetter != ' ') {
-            prompt += ", first letter " + firstLetter;
-        }
-        if (lastLetter != ' ') {
-            prompt += ", last letter " + lastLetter;
-        }
-        if (minLength != 0) {
-            prompt += ", min length " + minLength;
-        }
-
-        System.out.println(prompt);
         String word = "";
 
+        String message = "rw";
+        
+        if (firstLetter != ' ') {
+            message += ",sl," + firstLetter;
+        } else {
+            message += ",sl,0"; 
+        }
+        if (lastLetter != ' ') {
+            message += ",el," + lastLetter;
+        } else {
+            message += ",el,0";
+        }
+        if (minLength != 0) {
+            message += ",wl," + minLength;
+        } else {
+            message += ",wl,0";
+        }
         try {
-            word = scanner.nextLine();
-        } catch (Exception e) {
+            word = wordRepo.requestWord(message);
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
+        
+
+        // System.out.println(prompt);
+        // String word = "";
+
+        // try {
+        //     word = scanner.nextLine();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
         
 
 
