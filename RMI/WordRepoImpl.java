@@ -118,6 +118,7 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
     public String requestWord(String constraints) throws RemoteException {
         lock.readLock().lock();
         try {
+            System.out.println(constraints);
             String[] parts = constraints.split(",");
 
             // Check if the input message is in the expected format
@@ -149,7 +150,7 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
                     // Randomly select a word from the list
                     Random random = new Random();
                     String selectedWord = wordsList.get(random.nextInt(wordsList.size()));
-                    return "rw " + selectedWord;
+                    return selectedWord;
                 } else {
                     return "No word found that meets the specified constraints";
                 }

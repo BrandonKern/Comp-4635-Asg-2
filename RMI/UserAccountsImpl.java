@@ -17,7 +17,7 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
     }
 
     @Override
-    public boolean checkUser(String user_id) throws RemoteException {
+    public Boolean checkUser(String user_id) throws RemoteException {
     lock.writeLock().lock(); // Acquire write lock to modify the file
     try {
         List<String> lines = new ArrayList<>(); // To store lines from the file
@@ -64,7 +64,7 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
     }
 }
 
-    public boolean setUserInactive(String user_id) throws RemoteException {
+    public Boolean setUserInactive(String user_id) throws RemoteException {
     lock.writeLock().lock(); // Acquire write lock to modify the file
     try {
         List<String> lines = new ArrayList<>(); // To store lines from the file

@@ -139,6 +139,7 @@ public class ClientRPC {
                     gameHandler( user_id,scan,connection);
                     break;
                 case "Q":
+                    System.out.println(connection.setUserInactive(String.valueOf(user_id)));
                     break;
 
 
@@ -200,7 +201,7 @@ public class ClientRPC {
      * Output: A string representing the user's menu choice.
      */
 
-    public static Boolean gameMenu(int user_id, Scanner scan,CrissCrossPuzzleServer connection ) throws RemoteException {
+    public static Boolean gameMenu(int user_id, Scanner scan, CrissCrossPuzzleServer connection ) throws RemoteException {
 
         System.out.println();
         System.out.println();
@@ -224,6 +225,7 @@ public class ClientRPC {
             case "W":
                 System.out.println();
                 System.out.print(" Please enter the word you would like to check: ");
+                exit = guessWordHandler(user_id, scan.next(), connection);
                 // exit =readAndPrintResponseToGAME(user,createMessage("gw", scan.next()), user_id);
                 break;
             case "C":
@@ -232,7 +234,6 @@ public class ClientRPC {
                 //sendRequestToServer(user,createMessage("cw", scan.next()));
                 break;
             case "Q":
-                System.out.println(connection.setUserInactive(String.valueOf(user_id)));
                 exit = true;
                 //break;
         }
@@ -242,6 +243,47 @@ public class ClientRPC {
 
     }
 
+    private static Boolean guessWordHandler(int user_id, String word, CrissCrossPuzzleServer connection) throws RemoteException {
+        Boolean quit = false;
+        boolean success = connection.guessWord(user_id, word);
+        System.out.println(connection.displayGame(user_id));
+        if (success) {
+            System.out.println("Correct guess");
+            if (connection.checkWin(user_id)) {
+                System.out.println("You have won the game!");
+                connection.endGame(user_id);
+                return true;
+            }
+        } else {
+            System.out.println("Incorrect guess");
+            if (connection.checkLoss(user_id)) {
+                System.out.println("You have lost the game!");
+                connection.endGame(user_id);
+                return true;
+            }
+        }
+        return quit;
+    }
 
+    private static Boolean guessLetterHandler(String user_id, char letter, CrissCrossPuzzleServer connection) throws RemoteException {
+        Boolean quit = false;
+        int number_user_id = Integer.parseInt(user_id);
+        boolean success = connection.guessLetter(number_user_id, letter);
+        System.out.println(connection.displayGame(number_user_id));
+        if (success) {
+            if (connection.checkWin(number_user_id)) {
+                connection.endGame(number_user_id);
+            } else {
+
+            }
+        } else {
+            if (connection.checkLoss(number_user_id)) {
+                connection.endGame(number_user_id);
+            } else {
+
+            }
+        }
+        return quit;
+    }
 
 }

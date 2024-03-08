@@ -173,7 +173,7 @@ public class Game {
      * Return: a string of the unsolved puzzle
      */
     public String toString() {
-        return constructPuzzleString(this.unsolvedPuzzle) + "Counter: " +this.attempts;
+        return constructPuzzleStringWithNewLine(this.unsolvedPuzzle) + "Counter: " +this.attempts;
     }
 
     /*

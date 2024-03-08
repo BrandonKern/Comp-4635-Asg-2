@@ -72,65 +72,83 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
     }
 
     @Override
-    public String endGame(int user_id) throws RemoteException {
+    public boolean endGame(int user_id) throws RemoteException {
         Game game = games.get(user_id);
         if (game != null) {
-            return "sucess";
+            return true;
         } else {
             if (games.remove(user_id) != null) {
-                return "sucess";
+                return true;
             }
         }
-        return "clear";
+        return false;
     }
 
     @Override
     public String startGame(int user_id, int difficulty, int failed_attempts) throws RemoteException {
         Game game = games.get(user_id);
         if (game != null) {
-            System.out.println("Game already exists for this user!");
-            return "oof";
-        } else {
-            game = new Game(failed_attempts, difficulty, wordRepo);
-            games.put(user_id, game);
-            if (games.get(user_id) != null) {
-                System.out.println("Successfully created");
+            if (games.remove(user_id) != null) {
+                System.out.println("deleted old game for user " + user_id);
+            } else {
+                System.out.println("failure to start new game");
+                return "failure to start new game";
             }
-            System.out.println("New Game made for user " + user_id);
         }
+        game = new Game(failed_attempts, difficulty, wordRepo);
+        games.put(user_id, game);
+        if (games.get(user_id) != null) {
+            System.out.println("Successfully created");
+        } else {
+            return "failure to start new game";
+        }
+        System.out.println("New Game made for user " + user_id);
+        game.displayPuzzle();
         return game.toString();
     }
 
     @Override
-    public String guessLetter(int user_id, char letter) throws RemoteException {
+    public boolean guessLetter(int user_id, char letter) throws RemoteException {
         Game game = games.get(user_id);
         if (game != null) {
-            boolean gl = game.guessLetter(letter);
-            if (gl) {
-                return "correct guess";
-            } else {
-                return "incorrect guess";
-            }
+            return game.guessLetter(letter);
         } else {
             System.out.println("Game does not exist for this user");
         }
-        return "letter";
+        return false;
     }
 
     @Override
-    public String guessWord(int user_id, String word) throws RemoteException {
+    public boolean guessWord(int user_id, String word) throws RemoteException {
         Game game = games.get(user_id);
         if (game != null) {
-            boolean gw = game.guessWord(word);
-            if (gw) {
-                return "correct guess";
-            } else {
-                return "incorrect guess";
-            }
+            return game.guessWord(word);
         } else {
             System.out.println("Game does not exist for this user");
         }
-        return "word";
+        return false;
+    }
+
+    @Override
+    public boolean checkWin(int user_id) {
+        Game game = games.get(user_id);
+        if (game != null) {
+            return game.checkWin();
+        } else {
+            System.out.println("Game does not exist for this user");
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkLoss(int user_id) {
+        Game game = games.get(user_id);
+        if (game != null) {
+            return game.checkWin();
+        } else {
+            System.out.println("Game does not exist for this user");
+        }
+        return false;
     }
 
     @Override
