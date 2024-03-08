@@ -2,7 +2,10 @@ import java.net.InetAddress;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-
+/**
+ * UserAccountsRPC class sets up a server for the UserAccounts using Remote Method Invocation (RMI).
+ * It tries to connect, and then binds the remote object to the RMI registry and begins the server.
+ */
 public class UserAccountsRPC {
     private static final String HOST = "localhost";
     public static void main(String[] args) {
