@@ -19,16 +19,16 @@ public interface UserAccounts extends Remote {
 
      /**
      * Name: setUserInactive
-     * Sets a user's status to inactive.
-     * @param user_id the ID of the user to be set inactive
-     * @return true if the user is set inactive successfully, false otherwise
-     * @throws RemoteException if an error occurs during remote method invocation
+     * Purpose: Sets a user's status to inactive.
+     * Input: user_id the ID of the user to be set inactive
+     * Output: true if the user is set inactive successfully, false otherwise
+     * RemoteException if an error occurs during remote method invocation
      */
     Boolean setUserInactive(String user_id) throws RemoteException;
 
     /**
      * Name: checkUserScore
-     * Purpose: Checks the score of a user.
+     * Purpose: Checks the score of a user in the users.txt file.
      * Input: ser_id the ID of the user whose score to be checked
      * Output: a message indicating the user's score or if not found
      * RemoteException if an error occurs during remote method invocation
@@ -36,7 +36,7 @@ public interface UserAccounts extends Remote {
     String checkUserScore(String user_id) throws RemoteException;
     /**
      * Name: updateUserScore
-     * Purpose: Updates the score of a user.
+     * Purpose: Updates the score of a user in the users.txt file.
      * Input: user_id the ID of the user whose score to be updated
      * Output: a message indicating if the user's score is updated or not
      * RemoteException if an error occurs during remote method invocation
