@@ -1,3 +1,8 @@
+/**
+ * WordRepoImpl class implements the WordRepo interface and provides functionality for
+ * checking, adding, deleting, and requesting words from a repository.
+ */
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.BufferedReader;
