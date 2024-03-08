@@ -14,4 +14,5 @@ public interface CrissCrossPuzzleServer extends Remote {
     String guessLetter(int user_id, char letter) throws RemoteException;
     String guessWord(int user_id, String word) throws RemoteException;
     String displayGame(int userId) throws RemoteException;
+    boolean setUserInactive(String user_id) throws RemoteException;
 }
