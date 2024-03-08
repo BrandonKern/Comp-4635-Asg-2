@@ -62,7 +62,7 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
     }
 
     @Override
-    public String checkUser(String user_id) throws RemoteException {
+    public boolean checkUser(String user_id) throws RemoteException {
         return userAccounts.checkUser(user_id);
     }
 
