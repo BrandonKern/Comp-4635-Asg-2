@@ -29,11 +29,13 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
     }
 
     /**
-     * Checks if a word exists in the repository.
-     * @param word the word to be checked
-     * @return true if the word exists, false otherwise
-     * @throws RemoteException if an error occurs during remote method invocation
+     * Name: checkWord
+     * Purpose: Checks if a word exists in the repository.
+     * Input: word the word to be checked
+     * Output: true if the word exists, false otherwise
+     * RemoteException if an error occurs during remote method invocation
      */    
+    
     @Override
     public Boolean checkWord(String word) throws RemoteException {
         lock.readLock().lock();
@@ -57,11 +59,13 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
     }
 
      /**
-     * Deletes a word from the repository.
-     * @param word the word to be deleted
-     * @return true if the word is deleted successfully, false otherwise
-     * @throws RemoteException if an error occurs during remote method invocation
+     * Name: deleteWord
+     * Purpose: Deletes a word from the repository.
+     * Input: word the word to be deleted
+     * Output: true if the word is deleted successfully, false otherwise
+     * RemoteException if an error occurs during remote method invocation
      */
+    
     @Override
     public Boolean deleteWord(String word) throws RemoteException {
         lock.writeLock().lock();
@@ -100,11 +104,13 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
         }
     }
     /**
-     * Adds a word to the repository.
-     * @param word the word to be added
-     * @return true if the word is added successfully, false otherwise
-     * @throws RemoteException if an error occurs during remote method invocation
+     * Name: addWord
+     * Purpose: Adds a word to the repository.
+     * Input: word the word to be added
+     * Output: true if the word is added successfully, false otherwise
+     * RemoteException if an error occurs during remote method invocation
      */
+    
     @Override
     public Boolean addWord(String word) throws RemoteException {
         lock.writeLock().lock();
@@ -141,11 +147,13 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
     }
 
      /**
-     * Requests a word from the repository based on specified constraints.
-     * @param constraints a string containing constraints for word selection
-     * @return a word that meets the specified constraints or an appropriate message
-     * @throws RemoteException if an error occurs during remote method invocation
+     * Name: requestWord
+     * Purpose: Requests a word from the repository based on specified constraints.
+     * Input: constraints a string containing constraints for word selection
+     * Output: a word that meets the specified constraints or an appropriate message
+     * RemoteException if an error occurs during remote method invocation
      */
+    
     @Override
     public String requestWord(String constraints) throws RemoteException {
         lock.readLock().lock();
