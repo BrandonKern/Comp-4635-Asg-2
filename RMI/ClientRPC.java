@@ -38,7 +38,7 @@ public class ClientRPC {
         int login_id = scan.nextInt();
          //System.out.print(connection.login(login_id));
 
-        if (connection.checkUser(login_id))
+        if (connection.checkUser(String.valueOf(login_id)))
         {
             return login_id;
         }
@@ -232,7 +232,7 @@ public class ClientRPC {
                 //sendRequestToServer(user,createMessage("cw", scan.next()));
                 break;
             case "Q":
-                System.out.println(connection.setUserInactive(String.valueOf(user_id));
+                System.out.println(connection.setUserInactive(String.valueOf(user_id)));
                 exit = true;
                 //break;
         }
