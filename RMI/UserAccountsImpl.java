@@ -62,6 +62,49 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
     }
 }
 
+    public boolean setUserInactive(String user_id) throws RemoteException {
+    lock.writeLock().lock(); // Acquire write lock to modify the file
+    try {
+        List<String> lines = new ArrayList<>(); // To store lines from the file
+        boolean userFound = false;
+
+        try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] lineParts = line.trim().split(" ");
+
+                if (lineParts.length >= 3 && lineParts[0].equalsIgnoreCase(user_id)) {
+                    line = lineParts[0] + " " + lineParts[1] + " 0"; // Set active flag to 0
+                    userFound = true;
+                }
+                lines.add(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Error occurred while reading the file
+        }
+
+        if (!userFound) {
+            return false; // User not found, unable to set inactive
+        }
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt"))) {
+            for (String line : lines) {
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Error occurred while writing to the file
+        }
+
+        return true; // User set to inactive successfully
+    } finally {
+        lock.writeLock().unlock(); // Release the write lock
+    }
+}
+
+
     /* public String checkUser(String user_id) throws RemoteException {
 
         lock.readLock().lock();
