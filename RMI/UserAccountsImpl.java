@@ -15,7 +15,54 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
     }
 
     @Override
-    public String checkUser(String user_id) throws RemoteException {
+    public boolean checkUser(String user_id) throws RemoteException {
+    lock.writeLock().lock(); // Acquire write lock to modify the file
+    try {
+        List<String> lines = new ArrayList<>(); // To store lines from the file
+        boolean userExists = false;
+        boolean userActive = false;
+
+        try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] lineParts = line.trim().split(" ");
+
+                if (lineParts.length >= 3 && lineParts[0].equalsIgnoreCase(user_id)) {
+                    userExists = true;
+                    userActive = lineParts[2].equals("1"); // Check if user is active
+                    if (userActive) {
+                        return false; // User already active, cannot log in again
+                    }
+                    line = lineParts[0] + " " + lineParts[1] + " 1"; // Set active flag to 1
+                }
+                lines.add(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Error occurred while reading the file
+        }
+
+        if (!userExists) {
+            lines.add(user_id + " 0 1"); // User doesn't exist, add with active flag 1
+        }
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt"))) {
+            for (String line : lines) {
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Error occurred while writing to the file
+        }
+
+        return true; // User exists and updated successfully
+    } finally {
+        lock.writeLock().unlock(); // Release the write lock
+    }
+}
+
+    /* public String checkUser(String user_id) throws RemoteException {
 
         lock.readLock().lock();
         try {
@@ -45,7 +92,7 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
         } finally {
             lock.readLock().unlock();
         }
-    }
+    } */
 
     @Override
     public String checkUserScore(String user_id) throws RemoteException {
