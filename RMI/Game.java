@@ -21,16 +21,6 @@ public class Game {
         createPuzzle(wordRepo);
     }
 
-    // public void setGame(int attempts, int diff) {
-    //     this.attempts = attempts;
-    //     this.difficulty = diff;
-    //     this.stem = null;
-    //     this.solvedPuzzle = new ArrayList<>();
-    //     this.unsolvedPuzzle = new ArrayList<>();
-
-    //     // createPuzzle();
-    // }
-
     /*
      * Name: guessLetter
      * Purpose: Checks to see if the passed letter is part of the puzzle, if it is the
@@ -190,9 +180,8 @@ public class Game {
      */
     private void createPuzzle(WordRepo wordRepo) {
         //The scanner and prompts will be replaced with UDP calls to the Word Repo
-        Scanner gameScanner = new Scanner(System.in);
 
-        String stemWord = requestWord(this.difficulty-1, ' ', ' ', gameScanner, wordRepo);
+        String stemWord = requestWord(this.difficulty-1, ' ', ' ', wordRepo);
 
         this.stem = stemWord;
         this.solvedPuzzle.add(new Pair<Integer, String>(-1, stemWord));
@@ -206,10 +195,10 @@ public class Game {
                 int index = random.get(i);
 
                 if (first == true) {
-                    this.solvedPuzzle.add(new Pair<Integer, String>(index, requestWord(0, stemWord.charAt(index), ' ', gameScanner, wordRepo)));
+                    this.solvedPuzzle.add(new Pair<Integer, String>(index, requestWord(0, stemWord.charAt(index), ' ', wordRepo)));
                     first = false;
                 } else {
-                    this.solvedPuzzle.add(new Pair<Integer, String>(index, requestWord(0, ' ', stemWord.charAt(index), gameScanner, wordRepo)));
+                    this.solvedPuzzle.add(new Pair<Integer, String>(index, requestWord(0, ' ', stemWord.charAt(index), wordRepo)));
                     first = true;
                 }
             }
@@ -228,16 +217,16 @@ public class Game {
         // gameScanner.close(); causes issues with multiple calls as it also closes system.in
     }
 
-    /************************** NEEDS TO BE CHANGED FOR RPC IMPLEMENTATION ********************
+    /*
      * Name: requestWord
-     * purpose: Requests a word from the user from console with given constraints
+     * purpose: Requests a word from the word repository
      * Inputs: minLength - min length of the requested word
      *         firstLetter - the first letter of the requested word "" means param not requested
      *         lastLetter - last letter of the requested word "" means no param not requested
      *         scanner - the input scanner to read from the console
      * Return: the word given by the user
-     *********************************************************************************************/
-    private String requestWord(int minLength, char firstLetter, char lastLetter, Scanner scanner, WordRepo wordRepo) {
+     */
+    private String requestWord(int minLength, char firstLetter, char lastLetter, WordRepo wordRepo) {
         // Scanner wordGetter = new Scanner(System.in);
         String word = "";
 
@@ -263,18 +252,6 @@ public class Game {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        
-
-        // System.out.println(prompt);
-        // String word = "";
-
-        // try {
-        //     word = scanner.nextLine();
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        // }
-        
-
 
         if (word.length() >= minLength) {
             return word;
