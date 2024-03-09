@@ -15,6 +15,13 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
     private WordRepo wordRepo;
     private UserAccounts userAccounts;
 
+    /**
+     * Name: CrissCrossPuzzleServerImpl
+     * Purpose: Constructor for the CrissCrossPuzzleServerImpl class.
+     * Initializes the CrissCrossPuzzleServerImpl object and establishes connections to WordRepo and UserAccounts servers.
+     * RemoteException if a communication-related exception occurs during remote method invocation
+     */
+
     public CrissCrossPuzzleServerImpl() throws RemoteException {  
         super();
         try {
@@ -25,12 +32,6 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
         } catch (UnknownHostException | MalformedURLException | NotBoundException | RemoteException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public int login(int login_id) throws RemoteException {
-        return 0;
-
     }
 
     @Override

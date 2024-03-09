@@ -12,6 +12,10 @@ import java.util.ArrayList;
 public class UserAccountsImpl extends UnicastRemoteObject implements UserAccounts {
     private static final ReadWriteLock lock = new ReentrantReadWriteLock();
 
+    /**
+     * Constructor for UserAccountsImpl class.
+     * RemoteException if an error occurs during remote method invocation.
+     */
     protected UserAccountsImpl() throws RemoteException {
         super();
     }
@@ -105,39 +109,6 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
         lock.writeLock().unlock(); // Release the write lock
     }
 }
-
-
-    /* public String checkUser(String user_id) throws RemoteException {
-
-        lock.readLock().lock();
-        try {
-            try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    String[] lineParts = line.trim().split(" ");
-
-                    if (lineParts[0].equalsIgnoreCase(user_id)) {
-                        return user_id + " exists";
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "Error occurred while checking the userId";
-            }
-
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt", true))) {
-                bw.write(user_id + " 0");
-                bw.newLine(); // Add a newline character after the word
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "Error occurred while adding the user";
-            }
-
-            return user_id + " does not exist, added user";
-        } finally {
-            lock.readLock().unlock();
-        }
-    } */
 
     @Override
     public String checkUserScore(String user_id) throws RemoteException {

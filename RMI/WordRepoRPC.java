@@ -5,6 +5,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 
+/**
+ * WordRepoRPC class sets up a server for the WordRepo using Remote Method Invocation (RMI).
+ */
+
 public class WordRepoRPC {
     public static void main(String[] args) {
         try {
