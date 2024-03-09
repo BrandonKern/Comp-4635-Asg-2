@@ -5,7 +5,10 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-
+/**
+ * ServerRPC class sets up a server for the CrissCrossPuzzleServer using Remote Method Invocation (RMI).
+ * It initializes a remote object representing the server, binds it to the RMI registry, and awaits client connections.
+ */
 public class ServerRPC {
     public  static void  main (String [] args) {
         try {
