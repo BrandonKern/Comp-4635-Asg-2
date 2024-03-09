@@ -29,6 +29,7 @@ public class ClientRPC {
      * Purpose: Prompts the user to enter their login ID for accessing the crossword puzzle game.
      * Input: A SingleRequestClient object called user represents a single user's clientSocket
      * Output: The user's entered login ID as an integer.
+     * There is also a restriction, where if the user's login is already active, then they cannot proceed with the game. 
      */
     public static int loginPrompt( Scanner scan, CrissCrossPuzzleServer connection) throws RemoteException {
 
