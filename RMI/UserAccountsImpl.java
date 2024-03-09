@@ -149,7 +149,7 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
                     String[] lineParts = line.trim().split(" ");
 
                     if (lineParts[0].equalsIgnoreCase(user_id)) {
-                        return user_id + " score: " + lineParts[1];
+                        return user_id + "'s score is: " + lineParts[1];
                     }
                 }
             } catch (Exception e) {
@@ -180,7 +180,7 @@ public class UserAccountsImpl extends UnicastRemoteObject implements UserAccount
                     if (lineParts[0].equalsIgnoreCase(user_id)) {
                         changed = true;
                         int userScore = Integer.parseInt(lineParts[1]) + 1;
-                        fileContent.append(user_id).append(" ").append(userScore);
+                        fileContent.append(user_id).append(" ").append(userScore).append(" 1");
                     } else {
                         fileContent.append(line); // Keep the existing line
                     }

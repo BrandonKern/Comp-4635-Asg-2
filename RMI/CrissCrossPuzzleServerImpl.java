@@ -57,18 +57,18 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
     }
 
     @Override
-    public String checkScore(String user_id) throws RemoteException {
-        return userAccounts.checkUserScore(user_id);
+    public String checkScore(int user_id) throws RemoteException {
+        return userAccounts.checkUserScore(String.valueOf(user_id));
     }
 
     @Override
-    public boolean checkUser(String user_id) throws RemoteException {
-        return userAccounts.checkUser(user_id);
+    public boolean checkUser(int user_id) throws RemoteException {
+        return userAccounts.checkUser(String.valueOf(user_id));
     }
 
     @Override
-    public String updateUserScore(String user_id) throws RemoteException {
-        return userAccounts.updateUserScore(user_id);
+    public String updateUserScore(int user_id) throws RemoteException {
+        return userAccounts.updateUserScore(String.valueOf(user_id));
     }
 
     @Override
@@ -144,7 +144,7 @@ public class CrissCrossPuzzleServerImpl extends UnicastRemoteObject implements C
     public boolean checkLoss(int user_id) {
         Game game = games.get(user_id);
         if (game != null) {
-            return game.checkWin();
+            return game.checkLoss();
         } else {
             System.out.println("Game does not exist for this user");
         }

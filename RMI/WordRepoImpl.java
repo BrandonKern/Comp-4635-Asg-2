@@ -154,55 +154,72 @@ public class WordRepoImpl extends UnicastRemoteObject implements WordRepo {
      * RemoteException if an error occurs during remote method invocation
      */
     
-    @Override
-    public String requestWord(String constraints) throws RemoteException {
-        lock.readLock().lock();
-        try {
-            System.out.println(constraints);
-            String[] parts = constraints.split(",");
-
-            // Check if the input message is in the expected format
-            if (parts.length != 7 || !parts[0].equals("rw")) {
-                return "Invalid request";
-            }
-
-            String category = parts[1];
-            String startLetter = parts[2];
-            String endLetter = parts[4];
-            String minWordLength = parts[6];
-
-            List<String> wordsList = new ArrayList<>();
-
-            try (BufferedReader br = new BufferedReader(new FileReader("words.txt"))) {
-                String line;
-
-                // Iterate through each line in the "words.txt" file
-                while ((line = br.readLine()) != null) {
-                    // Check if the word meets the specified constraint
-                    if ((parts[1].equals("sl") && line.startsWith(startLetter)) ||
-                            (parts[3].equals("el") && line.endsWith(endLetter)) ||
-                            (parts[5].equals("wl") && !parts[6].equals("0") && line.length() >= Integer.parseInt(minWordLength))) {
-                        wordsList.add(line);
+     @Override
+     public String requestWord(String constraints) throws RemoteException {
+         lock.readLock().lock();
+         try {
+             List<String> wordsList = new ArrayList<>();
+             String[] parts = constraints.split(",");
+ 
+ 
+            if (constraints.equals("rw,sl,0,el,0,wl,0")) {
+                try (BufferedReader br = new BufferedReader(new FileReader("words.txt"))) {
+                    
+                    int randomLineNumber = new Random().nextInt(25000);
+                    
+                    for (int i = 1; i <= randomLineNumber; i++) {
+                        String word = br.readLine();
                     }
+                    
+                    return String.valueOf(br.readLine());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "Error occurred while searching for the word";
                 }
-
-                if (!wordsList.isEmpty()) {
-                    // Randomly select a word from the list
-                    Random random = new Random();
-                    String selectedWord = wordsList.get(random.nextInt(wordsList.size()));
-                    return selectedWord;
-                } else {
-                    return "No word found that meets the specified constraints";
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "Error occurred while searching for the word";
             }
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
+         
+          // Check if the input message is in the expected format
+             if (parts.length != 7 || !parts[0].equals("rw")) {
+                 return "Invalid request";
+             }
+ 
+             String category = parts[1];
+             String startLetter = parts[2];
+             String endLetter = parts[4];
+             String minWordLength = parts[6];
+ 
+ 
+ 
+             try (BufferedReader br = new BufferedReader(new FileReader("words.txt"))) {
+                 String line;
+ 
+                 // Iterate through each line in the "words.txt" file
+                 while ((line = br.readLine()) != null) {
+                     // Check if the word meets the specified constraint
+                     if ((parts[1].equals("sl") && line.startsWith(startLetter)) ||
+                             (parts[3].equals("el") && line.endsWith(endLetter)) ||
+                             (parts[5].equals("wl") && !parts[6].equals("0") && line.length() >= Integer.parseInt(minWordLength))) {
+                         wordsList.add(line);
+                     }
+                 }
+ 
+                 if (!wordsList.isEmpty()) {
+                     // Randomly select a word from the list
+                     Random random = new Random();
+                     String selectedWord = wordsList.get(random.nextInt(wordsList.size()));
+                     return selectedWord;
+                 } else {
+                     return "No word found that meets the specified constraints";
+                 }
+ 
+             } catch (Exception e) {
+                 e.printStackTrace();
+                 return "Error occurred while searching for the word";
+             }
+         } finally {
+             lock.readLock().unlock();
+         }
+     }
 }
 
 

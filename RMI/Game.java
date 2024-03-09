@@ -98,21 +98,22 @@ public class Game {
                     if (currPair.getKey() == -1) { //adding updating the word into the puzzle
                         Boolean right = true;
                         for (int j = 1; j < word.length()-1; j++) {
-
-                            Pair<Integer,String> leafPair =  this.unsolvedPuzzle.get(j);
-                            String newWord = leafPair.getValue();
-                            String replaceWord = newWord;
-
-                            if (right) {
-                                replaceWord = word.charAt(leafPair.getKey()) + newWord.substring(1, newWord.length());
-                                right = false;
-                            } else {
-                                replaceWord = newWord.substring(0, newWord.length()-1) + word.charAt(leafPair.getKey());
-                                right = true;
+                            if (this.unsolvedPuzzle.size() > 1) {
+                                Pair<Integer,String> leafPair =  this.unsolvedPuzzle.get(j);
+                                String newWord = leafPair.getValue();
+                                String replaceWord = newWord;
+    
+                                if (right) {
+                                    replaceWord = word.charAt(leafPair.getKey()) + newWord.substring(1, newWord.length());
+                                    right = false;
+                                } else {
+                                    replaceWord = newWord.substring(0, newWord.length()-1) + word.charAt(leafPair.getKey());
+                                    right = true;
+                                }
+                                leafPair.setValue(replaceWord);
                             }
-                            leafPair.setValue(replaceWord);
-                        }
 
+                        }
                     } else {
                         int index = currPair.getKey();
                         Pair<Integer, String> solvedPair = this.solvedPuzzle.get(0);
@@ -149,6 +150,7 @@ public class Game {
         if (attempts == 0) {
             lose = true;
         }
+        System.out.println("Loss is: " + lose);
         return lose;
     }
 
@@ -165,6 +167,7 @@ public class Game {
                 win = false;
             }
         }
+        System.out.println("Win is: " + win);
         return win;
     }
 
