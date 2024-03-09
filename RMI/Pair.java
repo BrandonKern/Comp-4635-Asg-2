@@ -1,4 +1,6 @@
-//pair class gotten from: https://iqcode.com/code/java/java-arraylist-of-pairs
+//pair class gotten from: https://iqcode.com/code/java/java-arraylist-of-pairs 
+
+// Purpose: used in game file to store the pair for the index of the word in the puzzle and the actual word.
 
 public class Pair<Key,Value> {
     private Key key;
