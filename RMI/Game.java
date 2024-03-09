@@ -225,15 +225,16 @@ public class Game {
         // gameScanner.close(); causes issues with multiple calls as it also closes system.in
     }
 
-    /************************** NEEDS TO BE CHANGED FOR RPC IMPLEMENTATION ********************
+    /**
      * Name: requestWord
-     * purpose: Requests a word from the user from console with given constraints
-     * Inputs: minLength - min length of the requested word
-     *         firstLetter - the first letter of the requested word "" means param not requested
-     *         lastLetter - last letter of the requested word "" means no param not requested
-     *         scanner - the input scanner to read from the console
-     * Return: the word given by the user
-     *********************************************************************************************/
+     * Purpose: requestWord method retrieves a word from the WordRepo based on specified constraints.
+     * Input 1: minLength the minimum length of the word to retrieve
+     * Input 2: firstLetter the first letter of the word to retrieve
+     * Input 3: lastLetter the last letter of the word to retrieve
+     * Input 4: scanner the Scanner object for user input (unused in this method)
+     * Input 5: wordRepo the WordRepo object for word retrieval
+     * Output: the word retrieved from WordRepo if it meets the specified constraints, otherwise "InvalidWord"
+     */
     private String requestWord(int minLength, char firstLetter, char lastLetter, Scanner scanner, WordRepo wordRepo) {
         // Scanner wordGetter = new Scanner(System.in);
         String word = "";
@@ -374,7 +375,12 @@ public class Game {
 
         return puzzleString;
     }
-
+/**
+ * Name: constructPuzzleStringWithNewLine
+ * Purpose: Constructs a puzzle string with new lines based on the provided puzzle.
+ * Input: the puzzle represented as an ArrayList of Pair objects containing index and word pairs
+ * Output: the constructed puzzle string with new lines
+ */
     private String constructPuzzleStringWithNewLine(ArrayList<Pair<Integer, String>> puzzle) {
         String puzzleString = "";
 
